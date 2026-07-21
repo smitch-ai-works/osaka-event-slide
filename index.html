@@ -1,0 +1,981 @@
+<title>『すみっち式』インスタ運用術 — おしゃれなスライド資料</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --page-plane: #eeece4;
+    --bg: #fbfaf6;
+    --ink: #14261f;
+    --ink-secondary: #5b5952;
+    --ink-muted: #8c8a80;
+    --border: rgba(20,38,30,0.10);
+    --border-strong: rgba(20,38,30,0.20);
+    --accent: #1f5c46;
+    --accent-deep: #123d2e;
+    --accent-wash: rgba(31,92,70,0.07);
+    --accent-strong-wash: rgba(31,92,70,0.14);
+    --gold: #c9974a;
+    --gold-deep: #a1762e;
+    --gold-wash: rgba(201,151,74,0.14);
+    --gold-strong-wash: rgba(201,151,74,0.24);
+    --charcoal: #1c1c19;
+    --head: #1b4a37;
+    --sans: "Hiragino Sans","Yu Gothic UI","Noto Sans JP","Segoe UI",system-ui,sans-serif;
+    --serif: "Yu Mincho","YuMincho","Hiragino Mincho ProN","Hiragino Mincho Pro","Noto Serif JP","MS Mincho",serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--page-plane); color: var(--ink);
+    font-family: var(--sans); }
+  .mono { font-family: "SF Mono","Cascadia Code","Consolas","Menlo",monospace; font-variant-numeric: tabular-nums; }
+
+  .deck { scroll-snap-type: y mandatory; overflow-y: auto; height: 100vh; }
+  .slide { height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center;
+    padding: clamp(14px,2.4vh,30px); }
+  .frame { position: relative; width: min(100%, calc(100vh * 16 / 9 - 24px)); aspect-ratio: 16/9; background: var(--bg);
+    background-image: radial-gradient(rgba(20,38,30,0.11) 1.1px, transparent 1.6px);
+    background-size: 22px 22px;
+    border-radius: 18px; box-shadow: 0 30px 70px rgba(15,25,20,0.20); overflow: hidden; display: flex; flex-direction: column; }
+  .frame.hero { background: radial-gradient(ellipse at 26% 16%, #1a4433 0%, #0a2018 58%, #061410 100%); color: #f5f2e7; }
+  .frame.hero-thumb { padding: 0; }
+  .thumb-full { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .frame:not(.hero):not(.hero-thumb)::after { content:''; position:absolute; width:44%; aspect-ratio:1; border-radius:50%;
+    background: radial-gradient(circle, var(--accent-wash), transparent 70%); top:-16%; right:-10%; pointer-events:none; z-index:0; opacity:.5; }
+  .frame:not(.hero):not(.hero-thumb)::before { content:''; position:absolute; width:28%; aspect-ratio:1; border-radius:50%;
+    background: radial-gradient(circle, var(--gold-wash), transparent 70%); bottom:-14%; left:-8%; pointer-events:none; z-index:0; opacity:.5; }
+
+  .pad { position: relative; z-index: 1; padding: clamp(20px,4vh,52px) clamp(28px,5vw,68px) clamp(12px,2vh,20px);
+    flex: 1; display: flex; flex-direction: column; min-height: 0; gap: clamp(10px,1.8vh,18px); }
+
+  .eyebrow { font-family: var(--serif); letter-spacing: .22em; font-size: clamp(13px,1.3vw,16px);
+    color: var(--gold); font-weight: 700; text-transform: uppercase; }
+  .frame.hero .eyebrow { color: #dcb877; }
+  .bar-eyebrow { display: flex; align-items: center; gap: 12px; padding-bottom: clamp(8px,1.4vh,14px);
+    border-bottom: 1px solid var(--border); }
+  .bar-eyebrow .bar { width: 6px; height: 1.05em; background: var(--head); border-radius: 2px; flex: none; }
+
+  h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 700; line-height: 1.32; color: var(--ink); }
+  .bar-eyebrow h2 { font-size: clamp(25px,2.85vw,39px); color: var(--head); letter-spacing: .01em; }
+  .frame.hero h1 { color: #fbfaf6; }
+
+  .foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: flex-end;
+    padding: clamp(6px,1vh,10px) clamp(30px,4.4vw,56px) clamp(12px,2vh,20px);
+    font-size: clamp(11px,1vw,13.5px); color: var(--ink-muted); letter-spacing: .12em; }
+  .foot .brand { display: none; }
+  .frame.hero .foot { color: rgba(245,242,231,0.55); }
+
+  .ic { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---- Hero ---- */
+  .hero-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    gap: clamp(14px,2.6vh,26px); padding: 0 clamp(20px,4vw,40px); }
+  .hero-title { font-size: clamp(24px,3.4vw,46px); max-width: 960px; }
+  .hero-sub { color: rgba(245,242,231,0.72); font-size: clamp(15px,1.5vw,19px); max-width: 760px; }
+  .hero-rule { width: 64px; height: 3px; background: var(--gold); border-radius: 2px; }
+
+  /* ---- Timeline (slide 2) ---- */
+  .tl-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: clamp(18px,3vh,30px) clamp(20px,3vw,34px); position: relative; }
+  .tl-row { display: flex; justify-content: space-between; position: relative; }
+  .tl-row::before { content:''; position: absolute; top: 11px; left: 4%; right: 4%; height: 2px; background: var(--border-strong); }
+  .tl-node { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 7px; z-index: 1; padding: 0 4px; }
+  .tl-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 3px solid var(--accent); }
+  .tl-dot.filled { background: var(--gold); border-color: var(--gold); }
+  .tl-date { font-weight: 800; font-size: clamp(17px,1.8vw,23px); }
+  .tl-label { font-weight: 700; font-size: clamp(17.5px,1.55vw,21px); }
+  .tl-sub { font-size: clamp(15.5px,1.35vw,18px); color: var(--ink-muted); }
+  .note-box { background: var(--gold-wash); border-left: 4px solid var(--gold); border-radius: 10px;
+    padding: clamp(13px,2.2vh,19px) clamp(18px,3vw,26px); font-size: clamp(19px,1.62vw,23px); line-height: 1.7; }
+
+  /* ---- Growth chart (slide 2) ---- */
+  .growth-chart { flex: 1; min-height: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: clamp(10px,1.6vh,14px) clamp(16px,2vw,22px) clamp(4px,.8vh,8px); display: flex; flex-direction: column; gap: 2px; }
+  .growth-chart .gc-title { flex: none; font-weight: 700; font-size: clamp(14.5px,1.25vw,17.5px); color: var(--ink-secondary); }
+  .growth-chart svg { flex: 1; width: 100%; min-height: 0; display: block; }
+
+  /* ---- Quote (slide 3) ---- */
+  .quote-slide { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 18px; position: relative; }
+  .quote-mark { font-size: clamp(56px,7vw,96px); color: var(--gold-wash); font-family: Georgia, serif; line-height: 1;
+    height: 0.5em; }
+  .quote-text { font-family: var(--serif); font-size: clamp(26px,3.15vw,42px); font-weight: 600; line-height: 1.7; max-width: 940px; color: var(--ink); }
+  .quote-attr { color: var(--gold-deep); font-weight: 700; font-size: clamp(12.5px,1.1vw,15px); }
+
+  /* ---- Split (icon panel) layout: slides 4, 12 ---- */
+  .split-row { display: flex; gap: clamp(18px,2.6vw,30px); flex: 1; min-height: 0; align-items: stretch; }
+  .split-main { flex: 1.35; display: flex; flex-direction: column; gap: clamp(10px,1.6vh,16px); min-width: 0; }
+  .split-main h2 { font-size: clamp(22px,2.3vw,31px); }
+  .split-main p { margin: 0; font-size: clamp(20px,1.92vw,25px); line-height: 1.72; color: var(--ink-secondary); }
+  .side-panel { flex: 1; background: linear-gradient(155deg, var(--accent-strong-wash), var(--gold-wash));
+    border-radius: 14px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .side-panel::after { content:''; position: absolute; inset: 0; border: 1px solid var(--border); border-radius: 14px; }
+  .side-panel svg { width: 42%; height: 42%; stroke: var(--accent-deep); position: relative; z-index: 1; }
+  .side-panel .spark { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); opacity: .55; }
+  .insight-box { margin-top: auto; background: rgba(20,38,30,0.045); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 13px 18px; font-size: clamp(18.5px,1.62vw,23px); line-height: 1.6; display: flex; gap: 9px; }
+  .insight-box b { font-family: var(--serif); font-weight: 700; color: var(--head); flex: none; }
+
+  /* ---- TTP/TTPS 2col (slide 5) ---- */
+  .ttp-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px,2.2vw,26px); flex: 0 0 auto; }
+  .ttp-card { background: var(--bg); border: 1px solid var(--border); border-top: 4px solid var(--accent);
+    border-radius: 14px; padding: clamp(16px,2.6vh,26px) clamp(18px,2.2vw,26px); display: flex; flex-direction: column; gap: 12px; }
+  .ttp-card.gold { border-top-color: var(--gold); }
+  .ttp-head { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: clamp(18px,1.65vw,23px); }
+  .ttp-card.gold .ttp-head { color: var(--gold-deep); }
+  .ttp-card svg { width: 22px; height: 22px; flex: none; stroke: var(--accent); }
+  .ttp-card.gold svg { stroke: var(--gold-deep); }
+  .ttp-body { font-size: clamp(20px,1.92vw,25px); line-height: 1.7; color: var(--ink-secondary); }
+  .ttp-note { font-size: clamp(15px,1.2vw,17px); color: var(--ink-muted); border-top: 1px dashed var(--border-strong);
+    padding-top: 10px; margin-top: auto; }
+
+  /* ---- Stat row (slide 6) ---- */
+  .stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(14px,2vw,22px); }
+  .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: clamp(16px,2.6vh,24px) clamp(10px,1.6vw,18px); text-align: center; display: flex; flex-direction: column; gap: 6px; }
+  .stat-num { font-family: var(--serif); font-weight: 700; font-size: clamp(34px,4.3vw,56px); color: var(--gold-deep); }
+  .stat-label { font-weight: 700; font-size: clamp(18.5px,1.58vw,22px); }
+  .stat-sub { font-size: clamp(16px,1.35vw,18.5px); color: var(--ink-muted); }
+  .stat-desc { font-size: clamp(20px,1.8vw,25px); line-height: 1.66; color: var(--ink-secondary); text-align: center; }
+
+  /* ---- Roadmap (slide 5) ---- */
+  .road-intro { margin: 0; font-size: clamp(18.5px,1.62vw,23px); color: var(--ink-secondary); line-height: 1.6; }
+  .road-row { display: flex; align-items: stretch; gap: clamp(6px,.9vw,12px); flex: 1; min-height: 0; }
+  .road-card { flex: 1; background: var(--bg); border: 1px solid var(--border); border-top: 4px solid var(--accent);
+    border-radius: 14px; padding: clamp(16px,2.6vh,26px) clamp(15px,1.7vw,22px); display: flex; flex-direction: column;
+    gap: clamp(7px,1.2vh,12px); box-shadow: 0 8px 22px rgba(15,25,20,0.06); }
+  .road-top { display: flex; align-items: center; justify-content: space-between; }
+  .road-num { font-family: Georgia, "Times New Roman", serif; color: var(--gold-deep); font-weight: 700;
+    font-size: clamp(32px,3.6vw,48px); line-height: 1; }
+  .road-ico { width: clamp(42px,4.2vw,56px); height: clamp(42px,4.2vw,56px); border-radius: 13px; flex: none;
+    background: var(--accent-wash); display: flex; align-items: center; justify-content: center; }
+  .road-ico svg { width: 52%; height: 52%; stroke: var(--accent-deep); fill: none; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .road-label { font-family: var(--serif); color: var(--head); font-weight: 700; font-size: clamp(18px,1.6vw,23px); }
+  .road-desc { font-size: clamp(17.5px,1.55vw,22px); color: var(--ink-secondary); line-height: 1.6; }
+  .road-tag { margin-top: auto; font-size: clamp(15px,1.28vw,17.5px); font-weight: 700; color: var(--gold-deep);
+    background: var(--gold-wash); border-radius: 9px; padding: clamp(8px,1.2vh,11px) clamp(11px,1.2vw,15px); }
+  .road-arrow { flex: none; align-self: center; color: var(--gold-deep); font-weight: 800;
+    font-size: clamp(20px,2.2vw,32px); }
+  .road-foot { text-align: center; font-family: var(--serif); color: var(--head); font-weight: 700;
+    font-size: clamp(17px,1.55vw,22px); background: var(--accent-wash); border: 1px solid var(--border);
+    border-radius: 12px; padding: clamp(12px,1.9vh,18px); }
+
+  /* ---- Step compare cards (slides 8, 9) reuse ttp-row/ttp-card ---- */
+
+  /* ---- STEP05 script mock (slide 10) ---- */
+  .step5-row { display: flex; gap: clamp(18px,2.6vw,30px); flex: 1; min-height: 0; align-items: stretch; }
+  .step5-main { flex: 1.3; display: flex; flex-direction: column; gap: clamp(10px,1.6vh,16px); }
+  .step5-main h2 { font-size: clamp(23px,2.45vw,33px); color: var(--head); line-height: 1.4; }
+  .step5-main p { margin: 0; font-size: clamp(20px,1.92vw,25px); line-height: 1.72; color: var(--ink-secondary); }
+  .script-mock { flex: 1; min-height: 0; background: var(--charcoal); border-radius: 16px; padding: 16px; display: flex;
+    flex-direction: column; align-items: flex-start; gap: 8px;
+    overflow: auto; box-shadow: 0 16px 34px rgba(10,15,12,0.28); }
+  .script-mock .rec-row { flex: none; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .script-mock .rec-dot { flex: none; width: 9px; height: 9px; border-radius: 50%;
+    background: #e5484d; box-shadow: 0 0 0 3px rgba(229,72,77,0.25); }
+  .script-mock .rec-label { flex: none; color: #e5484d; font-family: monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: .06em; }
+  .cap-line { background: rgba(255,255,255,0.96); color: #16150f; font-weight: 800; font-size: clamp(14px,1.32vw,17px);
+    padding: 9px 15px; border-radius: 20px; line-height: 1.45; max-width: 100%; flex: none; }
+  .cap-line.gold { background: var(--gold); color: #241a08; }
+
+  /* ---- Chart (slide 11) ---- */
+  .chart-row { display: flex; gap: clamp(18px,2.6vw,30px); flex: 1; min-height: 0; }
+  .chart-card { flex: 1.15; background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: clamp(16px,2.6vh,22px) clamp(18px,2.2vw,24px); display: flex; flex-direction: column; }
+  .chart-title { font-weight: 700; font-size: clamp(15.5px,1.3vw,18px); color: var(--ink-secondary); margin-bottom: 10px; }
+  .bars { display: flex; align-items: flex-end; gap: clamp(7px,1.2vw,14px); flex: 1; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; height: 100%; justify-content: flex-end; }
+  .bar { width: 100%; background: var(--accent-wash); border-radius: 5px 5px 0 0; }
+  .bar.peak { background: var(--gold); }
+  .bar-label { font-size: clamp(13px,1.05vw,15px); color: var(--ink-muted); font-weight: 600; }
+  .bar-label.peak { color: var(--gold-deep); font-weight: 800; }
+  .clock-card { flex: 1; background: var(--bg); border: 1px solid var(--border); border-top: 4px solid var(--gold);
+    border-radius: 14px; padding: clamp(16px,2.6vh,24px) clamp(18px,2.2vw,24px); display: flex; flex-direction: column; gap: 10px; }
+  .clock-head { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: clamp(16px,1.4vw,19.5px); }
+  .clock-head svg { width: 20px; height: 20px; stroke: var(--gold-deep); flex: none; }
+  .clock-line { font-weight: 700; font-size: clamp(18.5px,1.58vw,22px); }
+  .clock-line.check { color: var(--accent-deep); }
+  .clock-desc { font-size: clamp(19px,1.62vw,23px); line-height: 1.64; color: var(--ink-secondary); }
+
+  /* ---- Checklist (slide 12) ---- */
+  .check-list { display: flex; flex-direction: column; gap: clamp(10px,1.8vh,16px); }
+  .check-item { display: flex; gap: 12px; align-items: flex-start; }
+  .check-ico { width: clamp(20px,1.8vw,24px); height: clamp(20px,1.8vw,24px); border-radius: 50%; background: var(--gold);
+    display: flex; align-items: center; justify-content: center; flex: none; margin-top: 2px; }
+  .check-ico svg { width: 62%; height: 62%; stroke: #241a08; stroke-width: 3; }
+  .check-title { font-family: var(--serif); font-weight: 700; font-size: clamp(18px,1.6vw,21px); color: var(--head); }
+  .check-desc { font-size: clamp(19px,1.62vw,23px); color: var(--ink-secondary); line-height: 1.58; margin-top: 4px; }
+
+  /* ---- Buzz compare + phone mocks (slides 13-15) ---- */
+  .cmp-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px,2vw,22px); flex: 1; min-height: 0; }
+  .cmp-card { background: var(--bg); border: 1px solid var(--border); border-top: 4px solid var(--border-strong);
+    border-radius: 14px; padding: clamp(11px,1.8vh,17px) clamp(13px,1.6vw,19px); display: flex; flex-direction: column;
+    gap: 7px; min-height: 0; overflow: auto; }
+  .cmp-card.gold { border-top-color: var(--gold); background: var(--gold-wash); }
+  .cmp-head { display: flex; align-items: center; gap: 7px; font-family: var(--serif); font-weight: 700; font-size: clamp(16px,1.4vw,19px); color: var(--head); }
+  .cmp-head svg { width: 16px; height: 16px; flex: none; stroke: var(--ink-secondary); }
+  .cmp-card.gold .cmp-head { color: var(--gold-deep); }
+  .cmp-card.gold .cmp-head svg { stroke: var(--gold-deep); }
+  .video-row { display: flex; gap: 8px; justify-content: center; }
+  .ref-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .phone-mock { background: var(--charcoal); border-radius: 11px; padding: 5px; position: relative; flex: none;
+    box-shadow: 0 10px 20px rgba(10,20,15,0.22); }
+  .phone-mock::before { content:''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    width: 28%; height: 4px; border-radius: 3px; background: rgba(255,255,255,0.28); z-index: 2; }
+  .phone-mock .screen { width: 100%; height: 100%; border-radius: 7px; overflow: hidden; background: #000; }
+  .phone-mock .screen video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .phone-mock.xs { height: clamp(150px,27vh,210px); aspect-ratio: 9/16; }
+  .phone-mock.sm { height: clamp(195px,34vh,265px); aspect-ratio: 9/16; }
+  .phone-mock.lg { height: clamp(255px,43vh,345px); aspect-ratio: 9/16; }
+  .ref-handle { font-size: clamp(15.5px,1.28vw,18px); color: var(--ink-muted); font-weight: 600; text-align: center; max-width: 140px; }
+  .cmp-body { font-size: clamp(18.5px,1.6vw,22.5px); line-height: 1.58; color: var(--ink-secondary); }
+  .cmp-insight { margin-top: auto; background: rgba(20,38,30,0.05); border-left: 3px solid var(--border-strong);
+    border-radius: 7px; padding: 11px 15px; font-size: clamp(17px,1.48vw,20.5px); line-height: 1.54; }
+  .cmp-card.gold .cmp-insight { background: rgba(255,255,255,0.55); border-left-color: var(--gold); }
+  .ttps-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--gold); color: #241a08;
+    font-weight: 800; font-size: clamp(13.5px,1.1vw,15.5px); padding: 3px 9px; border-radius: 20px; align-self: flex-start; }
+
+  /* ---- Closing (slide 16) ---- */
+  .closing-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: clamp(16px,2.6vh,24px); padding: 0 clamp(16px,3vw,30px); }
+  .closing-quote { font-family: var(--serif); font-size: clamp(24px,2.85vw,38px); font-weight: 700; line-height: 1.55; max-width: 960px; color: var(--head); }
+  .closing-text { font-size: clamp(20.5px,1.72vw,25px); line-height: 1.78; color: var(--ink-secondary); max-width: 900px; }
+
+  /* ---- Illustration placeholders ---- */
+  .img-placeholder { border: 2px dashed var(--border-strong); border-radius: 12px; background: rgba(31,92,70,0.035);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: var(--ink-muted); }
+  .img-placeholder svg { width: clamp(26px,2.6vw,34px); height: clamp(26px,2.6vw,34px); stroke: var(--ink-muted); }
+  .img-placeholder .ph-tag { font-family: "SF Mono","Cascadia Code",monospace; font-weight: 800; font-size: clamp(12.5px,1.05vw,14.5px); color: var(--gold-deep); letter-spacing: .05em; }
+  .img-placeholder .ph-desc { font-size: clamp(12.5px,1.05vw,14.5px); line-height: 1.55; max-width: 90%; color: var(--ink-secondary); }
+  .img-placeholder.panel { flex: 1; padding: clamp(14px,2.2vh,20px); }
+  .ph-note { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 6px 13px;
+    border: 1.5px dashed var(--border-strong); border-radius: 20px; font-size: clamp(11.5px,.92vw,13px); color: var(--gold-deep);
+    font-weight: 700; background: rgba(201,151,74,0.08); }
+
+  /* ---- STEP01-04 merged grid ---- */
+  .step4-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: clamp(10px,1.4vw,16px); flex: 1; min-height: 0; }
+  .ttp-card.compact { padding: clamp(12px,1.8vh,17px) clamp(14px,1.6vw,19px); gap: 7px; }
+  .ttp-card.compact .ttp-head { font-size: clamp(14.5px,1.2vw,17px); gap: 7px; }
+  .ttp-card.compact .ttp-head svg { width: 18px; height: 18px; }
+  .ttp-card.compact .ttp-body { font-size: clamp(12.5px,1.05vw,14.5px); line-height: 1.55; }
+  .ttp-card.compact .ttp-note { font-size: clamp(11px,.9vw,12.5px); padding-top: 7px; }
+
+  /* ---- Portrait image panel (slide 4) ---- */
+  .img-portrait { flex: none; height: 100%; aspect-ratio: 1440 / 3164; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 16px 34px rgba(10,15,12,0.2); background: #000; }
+  .img-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ---- STEP01 research + TTP flow (slide 6) ---- */
+  .step6-row { display: flex; gap: clamp(18px,2.4vw,28px); flex: 1; min-height: 0; align-items: stretch; }
+  .step6-left { flex: 0.95; display: flex; flex-direction: column; gap: clamp(10px,1.6vh,16px); min-width: 0; }
+  .step6-left .research-shot { flex: none; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 22px rgba(10,15,12,0.16); }
+  .step6-left .research-shot img { width: 100%; display: block; }
+  .step6-left p { margin: 0; font-size: clamp(17.5px,1.55vw,22px); line-height: 1.6; color: var(--ink-secondary); }
+  .step6-right { flex: 1.35; display: flex; flex-direction: column; gap: clamp(8px,1.3vh,14px); min-height: 0; }
+  .ttp-pair-v { flex: 1; min-height: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: clamp(8px,1.2vh,12px) clamp(16px,2vw,22px); display: flex; flex-direction: column; gap: clamp(4px,.8vh,8px); }
+  .pv-head { flex: none; display: flex; align-items: baseline; gap: 10px; }
+  .pv-head .pv-label { font-family: var(--serif); font-weight: 700; font-size: clamp(14.5px,1.25vw,17px); color: var(--head); }
+  .pv-head .pv-cap { font-size: clamp(13px,1.1vw,16px); color: var(--ink-muted); }
+  .pair-row { display: flex; align-items: stretch; justify-content: center; gap: clamp(10px,1.4vw,16px); flex: 1; min-height: 0; min-width: 0; }
+  .pair-stack { display: flex; flex-direction: column; gap: 4px; height: 100%; justify-content: center; }
+  .pair-thumb { flex: none; height: 100%; border-radius: 6px; overflow: hidden;
+    box-shadow: 0 5px 12px rgba(10,15,12,0.2); background: #0c0c0a; display: flex; align-items: center; justify-content: center; }
+  .pair-thumb.sm { height: calc(50% - 2px); }
+  .pair-thumb img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
+  .pair-thumb.result { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .pair-arrow { display: flex; align-items: center; color: var(--gold-deep); font-weight: 800; font-size: clamp(17px,1.6vw,23px); flex: none; }
+
+  /* ---- 2x2 thumbnail grid (slide 7) ---- */
+  .thumb-grid2 { flex: 1; display: grid; grid-template-columns: repeat(2,1fr); grid-template-rows: repeat(2,1fr);
+    gap: clamp(8px,1.2vw,12px); min-height: 0; }
+  .thumb-grid2 img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; background: #0c0c0a;
+    border-radius: 10px; box-shadow: 0 8px 18px rgba(10,15,12,0.18); display: block; }
+
+  /* ---- Insight screenshot strip (slide 9) ---- */
+  .insight-shots-card { flex: 1.15; display: flex; gap: clamp(10px,1.4vw,16px); min-height: 0; }
+  .insight-shot { flex: 1; display: flex; flex-direction: column; gap: 6px; align-items: center; min-width: 0; min-height: 0; }
+  .insight-shot img { width: 100%; flex: 1; height: 0; min-height: 0; min-width: 0; object-fit: contain; background: #0c0c0a;
+    border-radius: 10px; box-shadow: 0 8px 18px rgba(10,15,12,0.16); display: block; }
+  .insight-shot .is-cap { flex: none; font-size: clamp(13px,1.12vw,16px); color: var(--ink-muted); font-weight: 700; text-align: center; }
+
+  /* ---- Genre proof grid (slide 10) ---- */
+  .genre-panel { flex: 1; display: flex; gap: clamp(8px,1.2vw,12px); min-height: 0; }
+  .genre-panel img { flex: 1; width: 0; height: 100%; min-width: 0; object-fit: contain; background: #0c0c0a; border-radius: 12px;
+    box-shadow: 0 10px 22px rgba(10,15,12,0.16); display: block; }
+
+  /* ---- Mindset flow diagram (slides 14,15) ---- */
+  .mind-flow { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(6px,1.1vh,13px); padding: clamp(2px,1vh,10px) clamp(10px,3vw,60px); }
+  .mind-step { position: relative; display: flex; align-items: center; gap: clamp(16px,2vw,28px); }
+  .mind-node { flex: none; width: clamp(52px,5.2vw,74px); height: clamp(52px,5.2vw,74px); border-radius: 50%;
+    background: linear-gradient(150deg, var(--accent), var(--accent-deep)); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700;
+    font-size: clamp(24px,2.4vw,34px); box-shadow: 0 8px 20px rgba(15,45,32,0.28); z-index: 1; }
+  .mind-card { flex: 1; background: var(--bg); border: 1px solid var(--border); border-left: 6px solid var(--accent);
+    border-radius: 14px; padding: clamp(14px,2.3vh,24px) clamp(18px,2.4vw,32px);
+    box-shadow: 0 10px 26px rgba(15,25,20,0.07); }
+  .mind-title { font-weight: 800; font-size: clamp(20px,1.95vw,28px); line-height: 1.42; color: var(--ink); }
+  .mind-sub { margin-top: clamp(4px,.9vh,9px); font-size: clamp(16px,1.4vw,20px); color: var(--ink-muted); line-height: 1.55; }
+  .mind-arrow { align-self: center; margin-left: clamp(24px,2.6vw,36px); color: var(--gold-deep);
+    font-size: clamp(26px,2.6vw,40px); line-height: .9; font-weight: 800; }
+  .mind-step.warn .mind-node { background: linear-gradient(150deg, #e0605a, #c0453a); }
+  .mind-step.warn .mind-card { border-left-color: #d0453a; background: rgba(224,66,63,0.05); }
+  .mind-step.warn .mind-title { color: #c0453a; }
+  .mind-step.concl .mind-node { background: linear-gradient(150deg, var(--gold), var(--gold-deep)); color: #241a08;
+    box-shadow: 0 8px 22px rgba(161,118,46,0.4); }
+  .mind-step.concl .mind-card { border: 2px solid var(--gold); border-left-width: 6px; background: var(--gold-wash); }
+  .mind-step.concl .mind-title { font-family: var(--serif); color: var(--head); font-size: clamp(21px,2.05vw,29px); line-height: 1.44; }
+  .mind-step.concl .mind-sub { color: var(--ink-secondary); }
+
+  /* ---- Entrance animations ---- */
+  .slide .pad > *, .frame.hero-thumb .thumb-full {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .62s cubic-bezier(.22,.61,.36,1), transform .62s cubic-bezier(.22,.61,.36,1); }
+  .slide.in-view .pad > *, .slide.in-view .frame.hero-thumb .thumb-full { opacity: 1; transform: none; }
+  .slide.in-view .pad > *:nth-child(1) { transition-delay: .04s; }
+  .slide.in-view .pad > *:nth-child(2) { transition-delay: .13s; }
+  .slide.in-view .pad > *:nth-child(3) { transition-delay: .22s; }
+  .slide.in-view .pad > *:nth-child(4) { transition-delay: .31s; }
+  .slide.in-view .pad > *:nth-child(5) { transition-delay: .40s; }
+  .slide.in-view .frame.hero-thumb .thumb-full { transition-delay: .05s; }
+  /* stagger cards inside a row once the row itself is in */
+  .slide.in-view .road-card, .slide.in-view .road-arrow, .slide.in-view .road-foot,
+  .slide.in-view .stat-card, .slide.in-view .ttp-pair-v,
+  .slide.in-view .thumb-grid2 img, .slide.in-view .insight-shot, .slide.in-view .check-item,
+  .slide.in-view .cmp-card, .slide.in-view .mind-step, .slide.in-view .mind-arrow,
+  .slide.in-view .cap-line {
+    animation: rise .55s cubic-bezier(.22,.61,.36,1) both; }
+  .slide.in-view .stat-card:nth-child(2),
+  .slide.in-view .cmp-card:nth-child(2) { animation-delay: .12s; }
+  /* mindset flow sequential reveal */
+  .slide.in-view .mind-flow > *:nth-child(1) { animation-delay: .10s; }
+  .slide.in-view .mind-flow > *:nth-child(2) { animation-delay: .30s; }
+  .slide.in-view .mind-flow > *:nth-child(3) { animation-delay: .50s; }
+  .slide.in-view .mind-flow > *:nth-child(4) { animation-delay: .70s; }
+  .slide.in-view .mind-flow > *:nth-child(5) { animation-delay: .90s; }
+  .slide.in-view .mind-flow > *:nth-child(6) { animation-delay: 1.10s; }
+  .slide.in-view .mind-flow > *:nth-child(7) { animation-delay: 1.30s; }
+  /* roadmap sequential flow reveal: card → arrow → card → arrow → card → summary */
+  .slide.in-view .road-row .road-card:nth-child(1) { animation-delay: .05s; }
+  .slide.in-view .road-row .road-arrow:nth-child(2) { animation-delay: .28s; }
+  .slide.in-view .road-row .road-card:nth-child(3) { animation-delay: .42s; }
+  .slide.in-view .road-row .road-arrow:nth-child(4) { animation-delay: .66s; }
+  .slide.in-view .road-row .road-card:nth-child(5) { animation-delay: .80s; }
+  .slide.in-view .road-foot { animation-delay: 1.05s; }
+  .slide.in-view .ttp-pair-v:nth-child(2) { animation-delay: .12s; }
+  .slide.in-view .ttp-pair-v:nth-child(3) { animation-delay: .24s; }
+  .slide.in-view .thumb-grid2 img:nth-child(2) { animation-delay: .10s; }
+  .slide.in-view .thumb-grid2 img:nth-child(3) { animation-delay: .20s; }
+  .slide.in-view .thumb-grid2 img:nth-child(4) { animation-delay: .30s; }
+  .slide.in-view .insight-shot:nth-child(2) { animation-delay: .11s; }
+  .slide.in-view .insight-shot:nth-child(3) { animation-delay: .22s; }
+  .slide.in-view .check-item:nth-child(2) { animation-delay: .13s; }
+  .slide.in-view .check-item:nth-child(3) { animation-delay: .26s; }
+  .slide.in-view .cap-line:nth-child(odd) { animation-delay: .06s; }
+  .slide.in-view .cap-line:nth-child(even) { animation-delay: .13s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  /* growth chart line draws itself */
+  .gc-line { stroke-dasharray: 1600; stroke-dashoffset: 1600; }
+  .slide.in-view .gc-line { animation: draw 1.5s ease .35s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  /* ---- Zoomable media affordance ---- */
+  .zoomable { cursor: zoom-in; transition: transform .3s ease, box-shadow .3s ease; }
+  .zoomable:hover { transform: scale(1.025); }
+  .phone-mock.zoomable:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 18px 32px rgba(10,20,15,0.34); }
+
+  /* ---- Lightbox ---- */
+  #lightbox { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center;
+    background: rgba(8,14,11,0.86); backdrop-filter: blur(3px); opacity: 0; visibility: hidden;
+    transition: opacity .28s ease, visibility .28s ease; padding: 3vh 3vw; }
+  #lightbox.open { opacity: 1; visibility: visible; }
+  #lightbox .lb-inner { transform: scale(.92); transition: transform .32s cubic-bezier(.22,.61,.36,1);
+    display: flex; align-items: center; justify-content: center; max-width: 94vw; max-height: 94vh; }
+  #lightbox.open .lb-inner { transform: scale(1); }
+  #lightbox img, #lightbox video { max-width: 94vw; max-height: 94vh; width: auto; height: auto;
+    border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); display: block; background: #000; }
+  #lightbox .lb-close { position: absolute; top: 20px; right: 26px; width: 46px; height: 46px; border-radius: 50%;
+    border: none; background: rgba(255,255,255,0.14); color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background .2s ease; }
+  #lightbox .lb-close:hover { background: rgba(255,255,255,0.28); }
+  #lightbox .lb-hint { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;
+    color: rgba(255,255,255,0.55); font-size: 13px; letter-spacing: .08em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide .pad > *, .frame.hero-thumb .thumb-full { opacity: 1; transform: none; transition: none; }
+    .slide.in-view .road-card, .slide.in-view .road-arrow, .slide.in-view .road-foot,
+    .slide.in-view .stat-card, .slide.in-view .ttp-pair-v,
+    .slide.in-view .thumb-grid2 img, .slide.in-view .insight-shot, .slide.in-view .check-item,
+    .slide.in-view .cmp-card, .slide.in-view .mind-step, .slide.in-view .mind-arrow,
+    .slide.in-view .cap-line { animation: none; }
+    .gc-line { stroke-dashoffset: 0; }
+    .zoomable:hover, .phone-mock.zoomable:hover { transform: none; }
+  }
+</style>
+
+<div class="deck">
+
+  <!-- 01 : Title -->
+  <section class="slide"><div class="frame hero-thumb">
+    <img class="thumb-full" src="picture/thumbnail.png" alt="4カ月でフォロワー1万人達成した『すみっち式』インスタ運用術">
+  </div></section>
+
+  <!-- 02 : Timeline -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>僕の軌跡 — ド素人から連続バズ・収益化まで</h2></div>
+      <div class="tl-card">
+        <div class="tl-row">
+          <div class="tl-node"><div class="tl-dot"></div><div class="tl-date mono">2/1</div><div class="tl-label">アカウント開設</div><div class="tl-sub">未経験・実績ゼロからスタート</div></div>
+          <div class="tl-node"><div class="tl-dot filled"></div><div class="tl-date mono">2/10</div><div class="tl-label">初のバズ発生</div><div class="tl-sub">1週間で一気に13万再生突破</div></div>
+          <div class="tl-node"><div class="tl-dot filled"></div><div class="tl-date mono">3/1</div><div class="tl-label">40万再生越えバズ動画</div><div class="tl-sub">一気にフォロワー+2,000人</div></div>
+          <div class="tl-node"><div class="tl-dot filled"></div><div class="tl-date mono">5/7</div><div class="tl-label">ローンチ開始</div><div class="tl-sub">ファン化＋リスト獲得を重視</div></div>
+          <div class="tl-node"><div class="tl-dot"></div><div class="tl-date mono">6月</div><div class="tl-label">月収20万円突破</div><div class="tl-sub">収入を得られました</div></div>
+        </div>
+      </div>
+      <div class="growth-chart">
+        <div class="gc-title">フォロワー増加数の実データ — 上のタイムラインの分岐点と連動</div>
+        <svg viewBox="0 0 1000 288" preserveAspectRatio="none">
+          <!-- Y grid + labels (follower count) -->
+          <text x="62" y="34" font-size="12.5" fill="#8c8a80" text-anchor="end">(人)</text>
+          <line x1="70" y1="56.5" x2="980" y2="56.5" stroke="rgba(20,38,30,0.08)" stroke-width="1"/>
+          <line x1="70" y1="106.2" x2="980" y2="106.2" stroke="rgba(20,38,30,0.08)" stroke-width="1"/>
+          <line x1="70" y1="155.8" x2="980" y2="155.8" stroke="rgba(20,38,30,0.08)" stroke-width="1"/>
+          <line x1="70" y1="205.4" x2="980" y2="205.4" stroke="rgba(20,38,30,0.08)" stroke-width="1"/>
+          <line x1="70" y1="255" x2="980" y2="255" stroke="rgba(20,38,30,0.22)" stroke-width="1.2"/>
+          <text x="62" y="60.5" font-size="13" fill="#8c8a80" text-anchor="end">12,000</text>
+          <text x="62" y="110.2" font-size="13" fill="#8c8a80" text-anchor="end">9,000</text>
+          <text x="62" y="159.8" font-size="13" fill="#8c8a80" text-anchor="end">6,000</text>
+          <text x="62" y="209.4" font-size="13" fill="#8c8a80" text-anchor="end">3,000</text>
+          <text x="62" y="259" font-size="13" fill="#8c8a80" text-anchor="end">0</text>
+
+          <!-- area + line -->
+          <path d="M70.0,255.0 L75.5,255.0 L81.0,254.9 L86.4,254.8 L91.9,254.8 L97.4,254.7 L102.9,254.7 L119.3,254.1 L124.8,253.2 L130.3,250.8 L135.8,249.6 L141.3,248.4 L146.7,248.1 L152.2,247.7 L157.7,247.5 L163.2,247.4 L168.7,247.3 L174.2,247.1 L179.6,246.9 L185.1,246.6 L190.6,245.2 L196.1,240.9 L201.6,239.4 L207.0,238.7 L212.5,237.5 L218.0,237.0 L223.5,235.3 L229.0,233.2 L234.5,232.2 L239.9,231.5 L245.4,230.7 L250.9,229.2 L256.4,227.1 L261.9,225.5 L267.3,222.6 L272.8,220.4 L278.3,218.0 L283.8,216.0 L289.3,213.2 L294.8,210.3 L300.2,208.1 L305.7,206.7 L311.2,205.0 L316.7,202.9 L322.2,200.6 L327.7,198.0 L333.1,195.5 L338.6,193.6 L344.1,191.9 L349.6,190.0 L355.1,187.5 L360.5,185.4 L366.0,183.5 L371.5,181.1 L377.0,178.7 L382.5,177.0 L388.0,174.7 L393.4,172.8 L398.9,171.6 L404.4,170.6 L409.9,169.6 L415.4,166.8 L420.8,159.3 L426.3,154.8 L431.8,153.2 L437.3,151.6 L442.8,150.3 L448.3,148.2 L453.7,145.4 L459.2,143.1 L464.7,139.1 L470.2,134.8 L475.7,132.5 L481.1,130.5 L486.6,129.1 L492.1,127.8 L497.6,127.0 L503.1,125.6 L508.6,123.2 L514.0,121.5 L519.5,119.8 L525.0,118.8 L530.5,118.0 L536.0,116.7 L541.4,115.2 L546.9,114.4 L552.4,113.9 L557.9,113.4 L563.4,112.9 L568.9,112.6 L574.3,112.3 L579.8,111.8 L585.3,111.4 L590.8,110.8 L596.3,110.4 L623.7,110.4 L629.2,109.3 L634.6,107.5 L640.1,106.5 L645.6,105.8 L651.1,105.1 L656.6,104.5 L662.0,104.0 L667.5,103.5 L673.0,102.2 L678.5,101.5 L684.0,100.9 L689.5,100.4 L694.9,99.2 L700.4,98.1 L705.9,97.2 L711.4,96.3 L716.9,95.4 L722.3,94.7 L727.8,94.0 L733.3,93.3 L738.8,92.3 L744.3,91.3 L749.8,89.8 L755.2,88.2 L760.7,86.3 L766.2,84.4 L771.7,81.8 L777.2,79.3 L782.7,77.6 L788.1,76.1 L793.6,74.8 L799.1,73.6 L804.6,72.7 L810.1,71.4 L815.5,70.1 L821.0,69.2 L826.5,68.2 L832.0,66.7 L837.5,65.3 L843.0,64.3 L848.4,63.5 L853.9,62.2 L859.4,61.1 L864.9,60.2 L870.4,59.4 L875.8,58.6 L881.3,58.1 L886.8,57.1 L892.3,55.5 L897.8,54.6 L903.3,53.6 L908.7,52.4 L914.2,51.5 L919.7,50.6 L925.2,49.8 L930.7,49.1 L936.1,48.4 L941.6,47.8 L947.1,47.3 L952.6,46.7 L958.1,46.4 L963.6,45.6 L969.0,45.1 L974.5,44.6 L980.0,40.5 L980.0,255.0 L70.0,255.0 Z" fill="rgba(31,92,70,0.10)" stroke="none"/>
+          <path d="M70.0,255.0 L75.5,255.0 L81.0,254.9 L86.4,254.8 L91.9,254.8 L97.4,254.7 L102.9,254.7 L119.3,254.1 L124.8,253.2 L130.3,250.8 L135.8,249.6 L141.3,248.4 L146.7,248.1 L152.2,247.7 L157.7,247.5 L163.2,247.4 L168.7,247.3 L174.2,247.1 L179.6,246.9 L185.1,246.6 L190.6,245.2 L196.1,240.9 L201.6,239.4 L207.0,238.7 L212.5,237.5 L218.0,237.0 L223.5,235.3 L229.0,233.2 L234.5,232.2 L239.9,231.5 L245.4,230.7 L250.9,229.2 L256.4,227.1 L261.9,225.5 L267.3,222.6 L272.8,220.4 L278.3,218.0 L283.8,216.0 L289.3,213.2 L294.8,210.3 L300.2,208.1 L305.7,206.7 L311.2,205.0 L316.7,202.9 L322.2,200.6 L327.7,198.0 L333.1,195.5 L338.6,193.6 L344.1,191.9 L349.6,190.0 L355.1,187.5 L360.5,185.4 L366.0,183.5 L371.5,181.1 L377.0,178.7 L382.5,177.0 L388.0,174.7 L393.4,172.8 L398.9,171.6 L404.4,170.6 L409.9,169.6 L415.4,166.8 L420.8,159.3 L426.3,154.8 L431.8,153.2 L437.3,151.6 L442.8,150.3 L448.3,148.2 L453.7,145.4 L459.2,143.1 L464.7,139.1 L470.2,134.8 L475.7,132.5 L481.1,130.5 L486.6,129.1 L492.1,127.8 L497.6,127.0 L503.1,125.6 L508.6,123.2 L514.0,121.5 L519.5,119.8 L525.0,118.8 L530.5,118.0 L536.0,116.7 L541.4,115.2 L546.9,114.4 L552.4,113.9 L557.9,113.4 L563.4,112.9 L568.9,112.6 L574.3,112.3 L579.8,111.8 L585.3,111.4 L590.8,110.8 L596.3,110.4 L623.7,110.4 L629.2,109.3 L634.6,107.5 L640.1,106.5 L645.6,105.8 L651.1,105.1 L656.6,104.5 L662.0,104.0 L667.5,103.5 L673.0,102.2 L678.5,101.5 L684.0,100.9 L689.5,100.4 L694.9,99.2 L700.4,98.1 L705.9,97.2 L711.4,96.3 L716.9,95.4 L722.3,94.7 L727.8,94.0 L733.3,93.3 L738.8,92.3 L744.3,91.3 L749.8,89.8 L755.2,88.2 L760.7,86.3 L766.2,84.4 L771.7,81.8 L777.2,79.3 L782.7,77.6 L788.1,76.1 L793.6,74.8 L799.1,73.6 L804.6,72.7 L810.1,71.4 L815.5,70.1 L821.0,69.2 L826.5,68.2 L832.0,66.7 L837.5,65.3 L843.0,64.3 L848.4,63.5 L853.9,62.2 L859.4,61.1 L864.9,60.2 L870.4,59.4 L875.8,58.6 L881.3,58.1 L886.8,57.1 L892.3,55.5 L897.8,54.6 L903.3,53.6 L908.7,52.4 L914.2,51.5 L919.7,50.6 L925.2,49.8 L930.7,49.1 L936.1,48.4 L941.6,47.8 L947.1,47.3 L952.6,46.7 L958.1,46.4 L963.6,45.6 L969.0,45.1 L974.5,44.6 L980.0,40.5" class="gc-line" fill="none" stroke="#123d2e" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+
+          <!-- milestone markers (staggered labels to avoid overlap) -->
+          <line x1="70" y1="46" x2="70" y2="255" stroke="#c9974a" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <circle cx="70" cy="255" r="5" fill="#c9974a"/>
+          <text x="72" y="18" font-size="16" font-weight="700" fill="#a1762e" text-anchor="start">2/1 開設</text>
+
+          <line x1="119.3" y1="46" x2="119.3" y2="254" stroke="#c9974a" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <circle cx="119.3" cy="254.1" r="5" fill="#c9974a"/>
+          <text x="119.3" y="38" font-size="16" font-weight="700" fill="#a1762e" text-anchor="middle">2/10 初バズ</text>
+
+          <line x1="223.5" y1="46" x2="223.5" y2="235" stroke="#c9974a" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <circle cx="223.5" cy="235.3" r="5" fill="#c9974a"/>
+          <text x="223.5" y="18" font-size="16" font-weight="700" fill="#a1762e" text-anchor="middle">3/1 40万再生</text>
+
+          <line x1="590.8" y1="46" x2="590.8" y2="110" stroke="#c9974a" stroke-width="1.2" stroke-dasharray="3,3"/>
+          <circle cx="590.8" cy="110.8" r="5" fill="#c9974a"/>
+          <text x="590.8" y="18" font-size="16" font-weight="700" fill="#a1762e" text-anchor="middle">5/7 ローンチ</text>
+
+          <circle cx="980" cy="40.5" r="6.5" fill="#123d2e"/>
+          <text x="976" y="22" font-size="17" font-weight="800" fill="#123d2e" text-anchor="end">7/17 約1.3万人</text>
+
+          <!-- month axis -->
+          <text x="70" y="278" font-size="14" fill="#8c8a80" text-anchor="start">2月</text>
+          <text x="223.5" y="278" font-size="14" fill="#8c8a80" text-anchor="middle">3月</text>
+          <text x="393.4" y="278" font-size="14" fill="#8c8a80" text-anchor="middle">4月</text>
+          <text x="557.9" y="278" font-size="14" fill="#8c8a80" text-anchor="middle">5月</text>
+          <text x="727.8" y="278" font-size="14" fill="#8c8a80" text-anchor="middle">6月</text>
+          <text x="892.3" y="278" font-size="14" fill="#8c8a80" text-anchor="middle">7月</text>
+        </svg>
+      </div>
+      <div class="note-box">ぶっちゃけ、僕は「100万再生」のような大バズは一度も出していません。<br>それでも、徹底してAI関係の発信を継続して、4カ月目でフォロワー1万人越え、5か月目で収益化に繋がりました。</div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>02 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 03 : Quote -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>ここまで伸ばせた最大の要因</h2></div>
+      <div class="quote-slide">
+        <div class="quote-text">結局はマインドセット！！<br>磯貝さんや講師の皆様の教えを<br><span style="color:var(--gold-deep);">ただ愚直に信じて実践し、継続しただけです！</span></div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>03 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 04 : 実は最初は僕もこんな感じでした -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>実は、最初は僕もこんな感じでした</h2></div>
+      <div class="split-row">
+        <div class="split-main">
+          <div class="stat-row">
+            <div class="stat-card"><div class="stat-num mono">50~100</div><div class="stat-label">超初期の再生数</div><div class="stat-sub">ここからさらに6本くらいは伸びませんでした</div></div>
+            <div class="stat-card"><div class="stat-num mono">毎日投稿</div><div class="stat-label">とりあえず出して添削</div><div class="stat-sub">伸びるまでは毎日出す勢いで頑張ってました</div></div>
+          </div>
+          <p>再生数50~150回の伸びない時期、僕も経験してます。<br>最初からうまくいかなくても、量をこなせばちゃんといつか伸びます！</p>
+          <div class="insight-box"><b>これ、当時の実際の画面です：</b>投稿4本、フォロワー0人、再生数は105・121・109・54回...</div>
+        </div>
+        <div class="img-portrait">
+          <img src="picture/s4-hero.png" alt="実際のアカウント初期の画面">
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>04 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 07 : Roadmap -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>動画制作フロー — 3つの実践ステップ</h2></div>
+      <p class="road-intro">毎回の動画で、僕はこの3ステップをただただ愚直に回し続けています。特別なことは一つもありません。</p>
+      <div class="road-row">
+        <div class="road-card">
+          <div class="road-top"><span class="road-num mono">01</span>
+            <span class="road-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span></div>
+          <div class="road-label">リサーチ＆模倣（TTP）</div>
+          <div class="road-desc">国内外の競合やONE内のアカウントを巡回し、良質な型が見つかれば基本TTP。</div>
+          <div class="road-tag">🔍 ゼロからは作らない</div>
+        </div>
+        <div class="road-arrow">→</div>
+        <div class="road-card">
+          <div class="road-top"><span class="road-num mono">02</span>
+            <span class="road-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg></span></div>
+          <div class="road-label">フック＆即・本題</div>
+          <div class="road-desc">みんなが知るワードでフックを作って指を止め、飽きられる前に7〜10秒で本題へ。</div>
+          <div class="road-tag">🎯 スワイプされる前に</div>
+        </div>
+        <div class="road-arrow">→</div>
+        <div class="road-card">
+          <div class="road-top"><span class="road-num mono">03</span>
+            <span class="road-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg></span></div>
+          <div class="road-label">言い切り台本</div>
+          <div class="road-desc">視聴者に迷いを感じさせない。自信に満ちたアフレコで、最後まで言い切る。</div>
+          <div class="road-tag">💬 迷いを見せない</div>
+        </div>
+      </div>
+      <div class="road-foot">この3ステップを、ひたすら繰り返して量を積むだけ。</div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>05 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 06 : STEP01 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>STEP 01：リサーチ＆模倣（TTP）</h2></div>
+      <div class="step6-row">
+        <div class="step6-left">
+          <div class="research-shot"><img src="picture/s6-research.png" alt="日々のリサーチ画面"></div>
+          <p>こうやって日々、伸びているアカウントを巡回リサーチしています。<br>「これはいける」と思った構成は、基本的に迷わず丸ごと真似る。<br>3パターンで実際にやってみたのが右の例。</p>
+          <div class="insight-box"><b>僕の結論：</b>ゼロからネタを考えない。実証済みの「型」をとにかく信じて、丸ごとパクる。</div>
+        </div>
+        <div class="step6-right">
+          <div class="ttp-pair-v">
+            <div class="pv-head"><span class="pv-label">「呪文TOP5」形式</span><span class="pv-cap">構成をそのままTTP</span></div>
+            <div class="pair-row">
+              <div class="pair-thumb"><img src="picture/s6-ttp1-src.png" alt="TTP元"></div>
+              <span class="pair-arrow">→</span>
+              <div class="pair-thumb result"><img src="picture/s6-ttp1-result.png" alt="TTP結果"></div>
+            </div>
+          </div>
+          <div class="ttp-pair-v">
+            <div class="pv-head"><span class="pv-label">「AI仕分け図」形式</span><span class="pv-cap">2本の型を統合してTTPS</span></div>
+            <div class="pair-row">
+              <div class="pair-stack">
+                <div class="pair-thumb sm"><img src="picture/s6-ttp2-src1.png" alt="TTP元1"></div>
+                <div class="pair-thumb sm"><img src="picture/s6-ttp2-src2.png" alt="TTP元2"></div>
+              </div>
+              <span class="pair-arrow">→</span>
+              <div class="pair-thumb result"><img src="picture/s6-ttp2-result.png" alt="TTPS結果"></div>
+            </div>
+          </div>
+          <div class="ttp-pair-v">
+            <div class="pv-head"><span class="pv-label">海外動画（Claude）</span><span class="pv-cap">英語の発信を日本語にTTP</span></div>
+            <div class="pair-row">
+              <div class="pair-thumb"><img src="picture/s6-ttp3-src.png" alt="海外の元動画"></div>
+              <span class="pair-arrow">→</span>
+              <div class="pair-thumb result"><img src="picture/s6-ttp3-result.png" alt="TTP後の動画"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>06 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 07 : STEP02 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>STEP 02：フックで止めて、即・本題へ</h2></div>
+      <div class="step5-row">
+        <div class="step5-main">
+          <h2>開始1秒で指を止めて、飽きる前に本題へ。</h2>
+          <p>冒頭は「ChatGPT」など、みんなが知っているワードやセリフでフックを作り、まず指を止めさせます。</p>
+          <p>そして冒頭から7〜10秒以内には本題へ。インスタは基本スワイプされる前提だからこそ、<b>飽きられる前に・スワイプされる前に</b>、端的にテンポよく本題に入ります。</p>
+          <p>属性（「現役エンジニア」「社畜」「30歳会社員」など）は、節々に少しだけ掛け合わせて差別化します！</p>
+          <div class="insight-box"><b>僕の結論：</b>フックから本題へ移るまでのテンポが命。<br>飽きさせる前に、スワイプされる前に、サクッと本題へ。</div>
+        </div>
+        <div class="thumb-grid2">
+          <img src="picture/s7-chatgpt1.png" alt="ChatGPT属性差し替え例1">
+          <img src="picture/s7-chatgpt2.png" alt="ChatGPT属性差し替え例2">
+          <img src="picture/s7-chatgpt3.png" alt="ChatGPT属性差し替え例3">
+          <img src="picture/s7-chatgpt4.png" alt="ChatGPT属性差し替え例4">
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>07 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 08 : STEP03 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>STEP 03：信頼を掴む「言い切る台本」</h2></div>
+      <div class="step5-row">
+        <div class="step5-main">
+          <h2 style="color:#c0453a;">「〜だと思います」は、僕の動画では完全禁止</h2>
+          <p>僕は発信で迷いを見せません（実際は迷っていますけど...笑）。<br>「ChatGPTの最新アプデは凄いと思います」ではなく、「最強です。これ以外使う必要はありません」と言い切ります！</p>
+          <p>視聴者は「答え」を求めがち。<br>言い切ることで、そのまま信頼につながっていきます。<br>自信を持って言い切ることが、今の僕のアカウントらしさになっています。</p>
+          <div class="insight-box"><b>僕の結論：</b>語尾は「です」「ます」で言い切る。<br>弱気な表現はできるだけ使わない。</div>
+        </div>
+        <div class="script-mock">
+          <div class="cap-line">「使わない理由がない。」</div>
+          <div class="cap-line gold">「ChatGPT一択の人、大損です！」</div>
+          <div class="cap-line">「正直、損してます。」</div>
+          <div class="cap-line gold">「一つの収入源に頼るのは、リスクしかないです。」</div>
+          <div class="cap-line">「あとは投稿ボタンを押すだけでOKです。」</div>
+          <div class="cap-line gold">「（嘘ついてる？と思った人）大正解です。」</div>
+          <div class="cap-line">「これはマジで最強。」</div>
+          <div class="cap-line gold">「Google AI Studio。圧倒的に神。」</div>
+          <div class="cap-line">「間違いなく最強のAIの一つ。」</div>
+          <div class="cap-line gold">「正直、これがないと仕事にならないです。」</div>
+          <div class="cap-line">「（Claudeを指さして）絶対使って。」</div>
+          <div class="cap-line gold">「これ知ってる人だけが、こっそり得できる。」</div>
+          <div class="cap-line">「使わないのは、バカらしくなる破壊力です。」</div>
+          <div class="cap-line gold">「情報過多の現代で、これ使えないのはヤバいです。」</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>08 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 11 : Posting routine + chart -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>投稿ルーティンとフォロワー層</h2></div>
+      <div class="chart-row">
+        <div class="insight-shots-card">
+          <div class="insight-shot"><img src="picture/s9-age.jpg" alt="フォロワー年齢層"><div class="is-cap">年齢層分布</div></div>
+          <div class="insight-shot"><img src="picture/s9-weekday.jpg" alt="平日のアクティブ時間帯"><div class="is-cap">平日のアクティブ時間帯</div></div>
+          <div class="insight-shot"><img src="picture/s9-weekend.jpg" alt="休日のアクティブ時間帯"><div class="is-cap">休日のアクティブ時間帯</div></div>
+        </div>
+        <div class="clock-card">
+          <div class="clock-head"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>投稿時間の狙い・意図</div>
+          <div class="clock-line check">✓ 投稿頻度：2日に1本の高頻度（継続が命）</div>
+          <div class="clock-line check">✓ 投稿時間：18:30〜19:30を徹底</div>
+          <div class="clock-desc">見てもらいやすい時間帯は平日・休日ともに21時以降がピーク。そこで一気に伸びるように、その手前の18:30〜19:30に投稿して、盛り上がりの波に乗せにいくイメージです。</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>09 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 12 : Axis (checklist) -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>ブレない軸 — AI専門特化へのこだわり</h2></div>
+      <div class="split-row">
+        <div class="split-main">
+          <div class="check-list">
+            <div class="check-item"><div class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+              <div><div class="check-title">「AI関連」以外の発信は絶対にしない</div><div class="check-desc">バズりそうだからといって、Gmailの豆知識やLINE設定など、AIONEへの集約に繋がらなそうなネタには手を出しません。</div></div></div>
+            <div class="check-item"><div class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+              <div><div class="check-title">専門特化を貫くから、一番に思い出してもらえる</div><div class="check-desc">「AIのことなら、現役エンジニアのすみっちさん」。<br>そう思ってもらえるように、発信の内容をずっと一貫させています。</div></div></div>
+            <div class="check-item"><div class="check-ico"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+              <div><div class="check-title">誰にでも届く薄い大バズより、深く刺さる濃い信頼</div><div class="check-desc">万人ウケを狙った薄い発信を10回するよりも、AIに関心のある層を教育するための発信を優先しています。</div></div></div>
+          </div>
+        </div>
+        <div class="genre-panel">
+          <img src="picture/s10-genre1.jpg" alt="投稿ジャンル一覧1">
+          <img src="picture/s10-genre2.jpg" alt="投稿ジャンル一覧2">
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>10 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 13 : Buzz 1 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>実例01：「AI×社畜」副業ランキング動画</h2></div>
+      <div class="cmp-row">
+        <div class="cmp-card">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M15 4v3h3"/></svg>参考にした他者のバズ（僕のTTP元）</div>
+          <div class="video-row">
+            <div class="ref-item"><div class="phone-mock xs"><div class="screen"><video muted loop playsinline autoplay src="video/buzz1-ref1.mp4"></video></div></div><div class="ref-handle">参考動画#1</div></div>
+            <div class="ref-item"><div class="phone-mock xs"><div class="screen"><video muted loop playsinline autoplay src="video/buzz1-ref2.mp4"></video></div></div><div class="ref-handle">参考動画#2</div></div>
+            <div class="ref-item"><div class="phone-mock xs"><div class="screen"><video muted loop playsinline autoplay src="video/buzz1-ref3.mp4"></video></div></div><div class="ref-handle">参考動画#3</div></div>
+          </div>
+          <div class="cmp-body">同じジャンルで大バズりしていたAI副業ランキング動画。<br>【NISA、論外！】で「なんで！？」って思わせて、つい最後まで観てしまう「型」が強力。</div>
+          <div class="cmp-insight">【気づき】伸びている構成をそのまま借りて、失敗する確率を減らす。</div>
+        </div>
+        <div class="cmp-card gold">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5 1-4.7 4.6L18 20l-6-3.4L6 20l1.2-6.4L2.5 9l6.5-1z"/></svg>僕のオリジナルアプローチ（TTPS）</div>
+          <div class="video-row"><div class="ref-item"><div class="phone-mock lg"><div class="screen"><video muted loop playsinline autoplay controls src="video/buzz1-own.mp4"></video></div></div><div class="ref-handle">自分の投稿</div></div></div>
+          <div class="cmp-body">結果が出ていた型に、「社畜」という自分のリアルな共感ワードを掛け合わせました。冒頭の「NISA、論外」の部分でドラムロールをかけて「でも実は...」みたいな惹きつける要素を加えてみました。</div>
+          <div class="cmp-insight">【結果】大バズ動画の構成をTTPした結果、自身初の<b style="color:var(--gold-deep);">13万再生</b>超えを記録。</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>11 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 14 : Buzz 2 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>実例02：「30歳現役エンジニアが辛口採点」動画</h2></div>
+      <div class="cmp-row">
+        <div class="cmp-card">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M15 4v3h3"/></svg>参考にした他者のバズ（僕のTTP元）</div>
+          <div class="video-row">
+            <div class="ref-item"><div class="phone-mock sm"><div class="screen"><video muted loop playsinline autoplay src="video/buzz2-ref1.mp4"></video></div></div><div class="ref-handle">参考動画#1</div></div>
+            <div class="ref-item"><div class="phone-mock sm"><div class="screen"><video muted loop playsinline autoplay src="video/buzz2-ref2.mp4"></video></div></div><div class="ref-handle">参考動画#2</div></div>
+          </div>
+          <div class="cmp-body">生徒間でバズを連発していた「使う」vs「使わない」の2択動画。<br>あとはどう差別化するか？を考えました。</div>
+          <div class="cmp-insight">【気づき】一度に情報がたくさん入ってくる＋「使う」「使わない」のテンポ感がいい。</div>
+        </div>
+        <div class="cmp-card gold">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5 1-4.7 4.6L18 20l-6-3.4L6 20l1.2-6.4L2.5 9l6.5-1z"/></svg>僕のオリジナルアプローチ（TTPS）</div>
+          <div class="video-row"><div class="ref-item"><div class="phone-mock lg"><div class="screen"><video muted loop playsinline autoplay controls src="video/buzz2-own.mp4"></video></div></div><div class="ref-handle">自分の投稿</div></div></div>
+          <div class="cmp-body">自分にしか語れない「30歳現役エンジニア」という立場に置き換えました。<br>エンジニア目線で「巷のAIを辛口採点する」という切り口にしたことで、専門家っぽさが自然と出るようになりました。</div>
+          <div class="cmp-insight">【結果】専門家っぽい立ち位置ができて、直後に<b style="color:var(--gold-deep);">8.6万再生</b>。<br>　　　最終的には<b style="color:var(--gold-deep);">40万再生越え！</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>12 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 15 : Buzz 3 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>実例03：「ChatGPT×Canva」画像編集動画</h2></div>
+      <div class="cmp-row">
+        <div class="cmp-card">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M15 4v3h3"/></svg>参考にした他者のバズ（僕のTTP元）</div>
+          <div class="video-row"><div class="ref-item"><div class="phone-mock sm"><div class="screen"><video muted loop playsinline autoplay src="video/buzz3-ref1.mp4"></video></div></div><div class="ref-handle">参考動画#1</div></div></div>
+          <div class="cmp-body">CanvaとChatGPTの連携技。アイデア自体はとても良い反面、元動画はかなりおっとりした語りで、本題に入るまでの前振りが少し長い印象でした。</div>
+          <div class="cmp-insight">【気づき】中身さえよければ、見せ方とスピードを変えるだけで伸びる。</div>
+        </div>
+        <div class="cmp-card gold">
+          <div class="cmp-head"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5 1-4.7 4.6L18 20l-6-3.4L6 20l1.2-6.4L2.5 9l6.5-1z"/></svg>僕のオリジナルアプローチ（TTPS）</div>
+          <div class="video-row"><div class="ref-item"><div class="phone-mock lg"><div class="screen"><video muted loop playsinline autoplay controls src="video/buzz3-own.mp4"></video></div></div><div class="ref-handle">自分の投稿</div></div></div>
+          <div class="cmp-body">機能の紹介部分はTTPしました。冒頭の長い雑談は自分のキャラに合わないので全部カットして、「ChatGPT、最近のアプデで画像編集ができるようになりました！」というセリフから一気に本題に入る構成に変えました。</div>
+          <div class="cmp-insight">【結果】バズる要素の中に、自分のテンポを組み合わせてバズりました。</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>13 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 16 : Mindset 1 - 先行者利益 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>腐らず続けられた理由①：先にやったもん勝ち</h2></div>
+      <div class="mind-flow">
+        <div class="mind-step">
+          <div class="mind-node">1</div>
+          <div class="mind-card"><div class="mind-title">SNSには、先行者利益がある。</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step">
+          <div class="mind-node">2</div>
+          <div class="mind-card"><div class="mind-title">先にやった人から、席が埋まっていく。</div>
+            <div class="mind-sub">すでに「AI × 50代なら中野さん」という席が埋まりつつある。ここを崩すのは至難の業。</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step">
+          <div class="mind-node">3</div>
+          <div class="mind-card"><div class="mind-title">しかもAIは、まだ発達しきっていない。</div>
+            <div class="mind-sub">未成熟な今だからこそ「AI発信者」としての地位を築ける。<br>これからAIが社会に浸透しきったとき、その席にいる人が<b>圧倒的な先行者利益</b>を受け取れる。</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step concl">
+          <div class="mind-node">✓</div>
+          <div class="mind-card"><div class="mind-title">「埋まる前に埋めちゃえばいい！だったら迷ってる場合じゃない」</div>
+            <div class="mind-sub">そう思えたので、しんどい時期も手を止めずにいられました。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>14 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 17 : Mindset 2 - 機会損失 -->
+  <section class="slide"><div class="frame">
+    <div class="pad">
+      <div class="bar-eyebrow"><div class="bar"></div><h2>腐らず続けられた理由②：払った分は無駄にしない</h2></div>
+      <div class="mind-flow">
+        <div class="mind-step">
+          <div class="mind-node">1</div>
+          <div class="mind-card"><div class="mind-title">スクールに、お金はもう払っている。</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step">
+          <div class="mind-node">2</div>
+          <div class="mind-card"><div class="mind-title">それでも正直、サボりたくなる時期も何度もありました。</div>
+            <div class="mind-sub">Youtube見たり、アニメ見たり、遊びに行きたい…</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step warn">
+          <div class="mind-node">!</div>
+          <div class="mind-card"><div class="mind-title">でも、ここでやめたら払った分がただの浪費で終わる。</div></div>
+        </div>
+        <div class="mind-arrow">↓</div>
+        <div class="mind-step concl">
+          <div class="mind-node">✓</div>
+          <div class="mind-card"><div class="mind-title">「それだけは絶対に嫌だ」。その一心で、腐らずに続けられました。</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>15 / 16</div>
+    </div>
+  </div></section>
+
+  <!-- 19 : Closing -->
+  <section class="slide"><div class="frame">
+    <div class="pad" style="padding-bottom:0;">
+      <div class="closing-body">
+        <div class="eyebrow" style="color:var(--gold-deep);">最後に</div>
+        <div class="closing-quote">才能なんて本当にいらないです！<br>バズっている「型」をTTPしつつ、<br>自分の属性を加えていくだけ。</div>
+        <div class="closing-text">とにかく「リサーチしまくって、徹底的に分析（TTP）し、そこに自分の社畜・エンジニアという<br>等身大の属性を乗せて進化（TTPS）させた」を繰り返しただけです。<br><br>最初は誰も見てくれなくて当然。<br>それでも正しい努力を継続すれば、必ず成果につながります！</div>
+        <div class="closing-text" style="font-weight:800;color:var(--ink);">次は、皆さんの番です！一緒に頑張りましょう🔥</div>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="brand"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>smitch_ai_works</div>
+      <div>16 / 16</div>
+    </div>
+  </div></section>
+
+</div>
+<div id="lightbox">
+  <button class="lb-close" aria-label="閉じる">&times;</button>
+  <div class="lb-inner"></div>
+  <div class="lb-hint">クリック / Esc で閉じる</div>
+</div>
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+
+    /* ---- Entrance animations on scroll ---- */
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) en.target.classList.add('in-view');
+          else en.target.classList.remove('in-view');
+        });
+      }, { threshold: 0.35 });
+      slides.forEach(function (s) { io.observe(s); });
+    } else {
+      slides.forEach(function (s) { s.classList.add('in-view'); });
+    }
+
+    /* ---- Keyboard navigation ---- */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { closeLightbox(); return; }
+      if (lb.classList.contains('open')) return;
+      var idx = -1, best = Infinity;
+      slides.forEach(function (s, i) {
+        var d = Math.abs(s.getBoundingClientRect().top);
+        if (d < best) { best = d; idx = i; }
+      });
+      if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].indexOf(e.key) !== -1) {
+        e.preventDefault();
+        slides[Math.min(idx + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+      } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].indexOf(e.key) !== -1) {
+        e.preventDefault();
+        slides[Math.max(idx - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    /* ---- Lightbox (click to zoom) ---- */
+    var lb = document.getElementById('lightbox');
+    var lbInner = lb.querySelector('.lb-inner');
+
+    function openImage(src, alt) {
+      lbInner.innerHTML = '';
+      var img = document.createElement('img');
+      img.src = src; img.alt = alt || '';
+      lbInner.appendChild(img);
+      lb.classList.add('open');
+    }
+    function openVideo(src) {
+      lbInner.innerHTML = '';
+      var v = document.createElement('video');
+      v.src = src; v.controls = true; v.autoplay = true; v.loop = true;
+      v.playsInline = true; v.muted = false;
+      lbInner.appendChild(v);
+      lb.classList.add('open');
+    }
+    function closeLightbox() {
+      if (!lb.classList.contains('open')) return;
+      lb.classList.remove('open');
+      setTimeout(function () { lbInner.innerHTML = ''; }, 300);
+    }
+
+    /* images: everything except the full-bleed title thumbnail */
+    document.querySelectorAll('.frame img').forEach(function (img) {
+      if (img.classList.contains('thumb-full')) return;
+      img.classList.add('zoomable');
+      img.addEventListener('click', function () { openImage(img.currentSrc || img.src, img.alt); });
+    });
+
+    /* videos: click the phone mock to enlarge with sound + controls */
+    document.querySelectorAll('.phone-mock').forEach(function (mock) {
+      var vid = mock.querySelector('video');
+      if (!vid) return;
+      mock.classList.add('zoomable');
+      mock.addEventListener('click', function () { openVideo(vid.currentSrc || vid.src); });
+    });
+
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb || e.target === lbInner || e.target.classList.contains('lb-close')) closeLightbox();
+    });
+  })();
+</script>
