@@ -283,14 +283,14 @@
   .pair-thumb { flex: none; height: 100%; border-radius: 6px; overflow: hidden;
     box-shadow: 0 5px 12px rgba(10,15,12,0.2); background: #0c0c0a; display: flex; align-items: center; justify-content: center; }
   .pair-thumb.sm { height: calc(50% - 2px); }
-  .pair-thumb img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
+  .pair-thumb img, .pair-thumb video { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
   .pair-thumb.result { outline: 2px solid var(--gold); outline-offset: 1px; }
   .pair-arrow { display: flex; align-items: center; color: var(--gold-deep); font-weight: 800; font-size: clamp(17px,1.6vw,23px); flex: none; }
 
   /* ---- 2x2 thumbnail grid (slide 7) ---- */
   .thumb-grid2 { flex: 1; display: grid; grid-template-columns: repeat(2,1fr); grid-template-rows: repeat(2,1fr);
     gap: clamp(8px,1.2vw,12px); min-height: 0; }
-  .thumb-grid2 img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; background: #0c0c0a;
+  .thumb-grid2 img, .thumb-grid2 video { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; background: #0c0c0a;
     border-radius: 10px; box-shadow: 0 8px 18px rgba(10,15,12,0.18); display: block; }
 
   /* ---- Insight screenshot strip (slide 9) ---- */
@@ -582,28 +582,28 @@
           <div class="ttp-pair-v">
             <div class="pv-head"><span class="pv-label">「呪文TOP5」形式</span><span class="pv-cap">構成をそのままTTP</span></div>
             <div class="pair-row">
-              <div class="pair-thumb"><img src="picture/s6-ttp1-src.png" alt="TTP元"></div>
+              <div class="pair-thumb"><video muted loop playsinline autoplay src="video/step01_1_ref.mp4"></video></div>
               <span class="pair-arrow">→</span>
-              <div class="pair-thumb result"><img src="picture/s6-ttp1-result.png" alt="TTP結果"></div>
+              <div class="pair-thumb result"><video muted loop playsinline autoplay src="video/step01_1_own.mp4"></video></div>
             </div>
           </div>
           <div class="ttp-pair-v">
             <div class="pv-head"><span class="pv-label">「AI仕分け図」形式</span><span class="pv-cap">2本の型を統合してTTPS</span></div>
             <div class="pair-row">
               <div class="pair-stack">
-                <div class="pair-thumb sm"><img src="picture/s6-ttp2-src1.png" alt="TTP元1"></div>
-                <div class="pair-thumb sm"><img src="picture/s6-ttp2-src2.png" alt="TTP元2"></div>
+                <div class="pair-thumb sm"><video muted loop playsinline autoplay src="video/step01_2_ref1.mp4"></video></div>
+                <div class="pair-thumb sm"><video muted loop playsinline autoplay src="video/step01_2_ref2.mp4"></video></div>
               </div>
               <span class="pair-arrow">→</span>
-              <div class="pair-thumb result"><img src="picture/s6-ttp2-result.png" alt="TTPS結果"></div>
+              <div class="pair-thumb result"><video muted loop playsinline autoplay src="video/step01_2_own.mp4"></video></div>
             </div>
           </div>
           <div class="ttp-pair-v">
             <div class="pv-head"><span class="pv-label">海外動画（Claude）</span><span class="pv-cap">英語の発信を日本語にTTP</span></div>
             <div class="pair-row">
-              <div class="pair-thumb"><img src="picture/s6-ttp3-src.png" alt="海外の元動画"></div>
+              <div class="pair-thumb"><video muted loop playsinline autoplay src="video/step01_3_ref.mp4"></video></div>
               <span class="pair-arrow">→</span>
-              <div class="pair-thumb result"><img src="picture/s6-ttp3-result.png" alt="TTP後の動画"></div>
+              <div class="pair-thumb result"><video muted loop playsinline autoplay src="video/step01_3_own.mp4"></video></div>
             </div>
           </div>
         </div>
@@ -628,10 +628,10 @@
           <div class="insight-box"><b>僕の結論：</b>フックから本題へ移るまでのテンポが命。<br>飽きさせる前に、スワイプされる前に、サクッと本題へ。</div>
         </div>
         <div class="thumb-grid2">
-          <img src="picture/s7-chatgpt1.png" alt="ChatGPT属性差し替え例1">
-          <img src="picture/s7-chatgpt2.png" alt="ChatGPT属性差し替え例2">
-          <img src="picture/s7-chatgpt3.png" alt="ChatGPT属性差し替え例3">
-          <img src="picture/s7-chatgpt4.png" alt="ChatGPT属性差し替え例4">
+          <video muted loop playsinline autoplay src="video/step02_example1.mp4"></video>
+          <video muted loop playsinline autoplay src="video/step02_example2.mp4"></video>
+          <video muted loop playsinline autoplay src="video/step02_example3.mp4"></video>
+          <video muted loop playsinline autoplay src="video/step02_example4.mp4"></video>
         </div>
       </div>
     </div>
@@ -972,6 +972,12 @@
       if (!vid) return;
       mock.classList.add('zoomable');
       mock.addEventListener('click', function () { openVideo(vid.currentSrc || vid.src); });
+    });
+
+    /* STEP01/02 comparison + grid videos: click to enlarge */
+    document.querySelectorAll('.pair-thumb video, .thumb-grid2 video').forEach(function (vid) {
+      vid.classList.add('zoomable');
+      vid.addEventListener('click', function () { openVideo(vid.currentSrc || vid.src); });
     });
 
     lb.addEventListener('click', function (e) {
